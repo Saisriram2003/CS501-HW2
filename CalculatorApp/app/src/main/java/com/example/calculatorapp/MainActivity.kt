@@ -119,7 +119,11 @@ class MainActivity : AppCompatActivity() {
                         "+" -> result = firstNum + secondNum
                         "-" -> result = firstNum - secondNum
                         "*" -> result = firstNum * secondNum
-                        "/" -> result = firstNum / secondNum
+                        "/" -> if (secondNum == 0.0) {
+                            binding.editTextAnswer.setText("Divide by Zero not allowed.")
+                        }else{
+                            result = firstNum / secondNum
+                        }
                     }
                     if(result > Double.MAX_VALUE || result < Double.MIN_VALUE){
                         binding.editTextAnswer.setText("The value is out of range.")
