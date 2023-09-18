@@ -108,6 +108,8 @@ class MainActivity : AppCompatActivity() {
                 binding.editTextAnswer.setText(result.toString())
 
                 operator = ""
+                firstNum = 0.0
+                secondNum = 0.0
             }
         }
 
