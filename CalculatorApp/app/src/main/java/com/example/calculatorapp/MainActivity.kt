@@ -106,6 +106,8 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 binding.editTextAnswer.setText(result.toString())
+
+                operator = ""
             }
         }
 
