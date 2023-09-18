@@ -10,7 +10,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private var currentNum: String = ""
+    private var currentNum: String = "0"
 
     private var firstNum: Double = 0.0
     private var secondNum: Double = 0.0
@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.editTextAnswer.setText(currentNum)
 
         binding.button0.setOnClickListener{
             inputNum(0)
@@ -71,6 +72,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.buttonPlus.setOnClickListener {
             operator("+")
+            binding.buttonPlus.isSelected != binding.buttonPlus.isSelected
         }
 
         binding.buttonSub.setOnClickListener {
@@ -88,7 +90,7 @@ class MainActivity : AppCompatActivity() {
         binding.buttonSqrt.setOnClickListener {
             val res = sqrt(currentNum.toDouble())
             binding.editTextAnswer.setText(res.toString())
-            currentNum = ""
+            currentNum = "0"
         }
 
         binding.buttonEqual.setOnClickListener {
@@ -112,7 +114,7 @@ class MainActivity : AppCompatActivity() {
                 operator = ""
                 firstNum = 0.0
                 secondNum = 0.0
-                currentNum = ""
+                currentNum = "0"
             }
         }
 
@@ -134,8 +136,12 @@ class MainActivity : AppCompatActivity() {
             // store the firstNum (by converting it)
             // clear the currentNum
             operator = op
-            firstNum = currentNum.toDouble()
-            currentNum = ""
+            firstNum = if (currentNum == "0") {
+                0.0
+            } else {
+                currentNum.toDouble()
+            }
+            currentNum = "0"
             binding.editTextAnswer.setText(currentNum)
         } else {
             // operator has been pressed before:
