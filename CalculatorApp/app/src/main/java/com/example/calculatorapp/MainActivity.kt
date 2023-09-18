@@ -107,9 +107,11 @@ class MainActivity : AppCompatActivity() {
 
                 binding.editTextAnswer.setText(result.toString())
 
+                // reset firstNum and secondNum for another round of operation
                 operator = ""
                 firstNum = 0.0
                 secondNum = 0.0
+                currentNum = ""
             }
         }
 
