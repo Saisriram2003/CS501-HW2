@@ -136,13 +136,22 @@ class MainActivity : AppCompatActivity() {
             // store the firstNum (by converting it)
             // clear the currentNum
             operator = op
-            firstNum = if (currentNum == "0") {
-                0.0
+
+            if (binding.editTextAnswer.text.toString() != "0") {
+                // meaning there's a result from previous calculation
+                // and user just want to continue their operation on the current number
+                firstNum = binding.editTextAnswer.text.toString().toDouble()
             } else {
-                currentNum.toDouble()
+                firstNum = if (currentNum == "0") {
+                    0.0
+                } else {
+                    currentNum.toDouble()
+                }
+
+                binding.editTextAnswer.setText("0")
             }
+
             currentNum = "0"
-            binding.editTextAnswer.setText(currentNum)
         } else {
             // operator has been pressed before:
             // replace the operator
