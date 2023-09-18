@@ -12,8 +12,6 @@ class MainActivity : AppCompatActivity() {
 
     private var currentNum: String = "0"
 
-    private var firstNum: Double = 0.0
-    private var secondNum: Double = 0.0
     private var operator: String = ""
 
     private var opClicked: Boolean = false
@@ -110,22 +108,32 @@ class MainActivity : AppCompatActivity() {
             if (opClicked) {
                 var result = 0.0
                 var inputNumList = currentNum.split(operator)
-                firstNum = inputNumList[0].toDouble()
-                secondNum = inputNumList[1].toDouble()
-                when (operator) {
-                    "+" -> result = firstNum + secondNum
-                    "-" -> result = firstNum - secondNum
-                    "*" -> result = firstNum * secondNum
-                    "/" -> result = firstNum / secondNum
+                var firstNum = inputNumList[0].toDoubleOrNull()
+                var secondNum = inputNumList[1].toDoubleOrNull()
+
+                if (firstNum == null || secondNum == null) {
+                    binding.editTextAnswer.setText("Please enter valid inputs.")
+                } else {
+
+                    when (operator) {
+                        "+" -> result = firstNum + secondNum
+                        "-" -> result = firstNum - secondNum
+                        "*" -> result = firstNum * secondNum
+                        "/" -> result = firstNum / secondNum
+                    }
+                    if(result > Double.MAX_VALUE || result < Double.MIN_VALUE){
+                        binding.editTextAnswer.setText("The value is out of range.")
+                    }
+                    else{
+                        binding.editTextAnswer.setText(result.toString())
+                    }
+
+                    // reset firstNum and secondNsum for another round of operation
+                    opClicked = false
+                    firstNum = 0.0
+                    secondNum = 0.0
+                    currentNum = "0"
                 }
-
-                binding.editTextAnswer.setText(result.toString())
-
-                // reset firstNum and secondNum for another round of operation
-                opClicked = false
-                firstNum = 0.0
-                secondNum = 0.0
-                currentNum = "0"
             }
             else{
                 binding.editTextAnswer.setText("Please enter a valid equation")
