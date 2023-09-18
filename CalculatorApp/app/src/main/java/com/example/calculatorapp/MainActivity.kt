@@ -9,17 +9,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private lateinit var zero: Button
-    private lateinit var one: Button
-    private lateinit var two: Button
-    private lateinit var three: Button
-    private lateinit var four: Button
-    private lateinit var five: Button
-    private lateinit var six: Button
-    private lateinit var seven: Button
-    private lateinit var eight: Button
-    private lateinit var nine: Button
-
     private var currentNum: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
