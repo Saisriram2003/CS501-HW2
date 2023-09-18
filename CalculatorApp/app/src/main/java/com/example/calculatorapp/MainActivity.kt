@@ -88,6 +88,7 @@ class MainActivity : AppCompatActivity() {
         binding.buttonSqrt.setOnClickListener {
             val res = sqrt(currentNum.toDouble())
             binding.editTextAnswer.setText(res.toString())
+            currentNum = ""
         }
 
         binding.buttonEqual.setOnClickListener {
