@@ -71,7 +71,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="+"
-        android:backgroundTint="@color/button_background_color"
+        app:backgroundTint="@color/grey"
         style="@style/box_sky_blue"
         app:layout_constraintTop_toBottomOf="@id/editTextAnswer"
         app:layout_constraintStart_toEndOf="@id/button3"
