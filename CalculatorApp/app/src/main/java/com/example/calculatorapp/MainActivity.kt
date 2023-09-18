@@ -16,6 +16,8 @@ class MainActivity : AppCompatActivity() {
     private var secondNum: Double = 0.0
     private var operator: String = ""
 
+    private var opClicked: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -71,20 +73,31 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.buttonPlus.setOnClickListener {
-            operator("+")
-            binding.buttonPlus.isSelected != binding.buttonPlus.isSelected
+            if(!opClicked){
+                operator("+")
+                opClicked = true
+            }
         }
 
         binding.buttonSub.setOnClickListener {
-            operator("-")
+            if(!opClicked){
+                operator("-")
+                opClicked = true
+            }
         }
 
         binding.buttonMult.setOnClickListener{
-            operator("*")
+            if(!opClicked){
+                operator("*")
+                opClicked = true
+            }
         }
 
         binding.buttonDiv.setOnClickListener {
-            operator("÷")
+            if(!opClicked){
+                operator("/")
+                opClicked = true
+            }
         }
 
         binding.buttonSqrt.setOnClickListener {
@@ -94,27 +107,28 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.buttonEqual.setOnClickListener {
-            // check if operator == ""
-            if (operator != "") {
-                // grab the second number
-                secondNum = currentNum.toDouble()
-
+            if (opClicked) {
                 var result = 0.0
-
+                var inputNumList = currentNum.split(operator)
+                firstNum = inputNumList[0].toDouble()
+                secondNum = inputNumList[1].toDouble()
                 when (operator) {
                     "+" -> result = firstNum + secondNum
                     "-" -> result = firstNum - secondNum
                     "*" -> result = firstNum * secondNum
-                    "÷" -> result = firstNum / secondNum
+                    "/" -> result = firstNum / secondNum
                 }
 
                 binding.editTextAnswer.setText(result.toString())
 
                 // reset firstNum and secondNum for another round of operation
-                operator = ""
+                opClicked = false
                 firstNum = 0.0
                 secondNum = 0.0
                 currentNum = "0"
+            }
+            else{
+                binding.editTextAnswer.setText("Please enter a valid equation")
             }
         }
 
@@ -130,32 +144,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun operator(op: String) {
-        if (operator == "") {
             // No operator has been clicked before:
             // set the operator
             // store the firstNum (by converting it)
             // clear the currentNum
-            operator = op
+        operator = op
 
-            if (binding.editTextAnswer.text.toString() != "0") {
-                // meaning there's a result from previous calculation
-                // and user just want to continue their operation on the current number
-                firstNum = binding.editTextAnswer.text.toString().toDouble()
-            } else {
-                firstNum = if (currentNum == "0") {
-                    0.0
-                } else {
-                    currentNum.toDouble()
-                }
-
-                binding.editTextAnswer.setText("0")
-            }
-
-            currentNum = "0"
-        } else {
+        currentNum += op
+        binding.editTextAnswer.setText(currentNum)
+//        else {
             // operator has been pressed before:
             // replace the operator
-            operator = op
-        }
+//            operator = op
+//        }
     }
 }
