@@ -15,12 +15,13 @@ class MainActivity : AppCompatActivity() {
 
     private var currentNum: String = "0"
 
+    private var operator: String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.editTextAnswer.setText(currentNum)
+        binding.editTextAnswer.setText("0")
 
         binding.button0.setOnClickListener{
             inputNum(0)
@@ -63,9 +64,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.buttonDot.setOnClickListener {
-            if (currentNum.lastIndexOf('.') ==  -1) {
-                currentNum += "."
-                binding.editTextAnswer.setText(currentNum)
+            var currText = binding.editTextAnswer.text.toString()
+            if (currText.lastIndexOf('.') ==  -1) {
+                currText += "."
+                binding.editTextAnswer.setText(currText)
             }
         }
 
@@ -86,9 +88,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.buttonSqrt.setOnClickListener {
-            val res = sqrt(currentNum.toDouble())
-            binding.editTextAnswer.setText(res.toString())
-            currentNum = "0"
+            binding.editTextAnswer.setText(binding.editTextAnswer.text.toString() + "sqrt")
         }
 
         binding.buttonEqual.setOnClickListener {
@@ -102,17 +102,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun inputNum(num: Int) {
-        if (currentNum.equals("0")) {
-            currentNum = num.toString()
+        var currText = binding.editTextAnswer.text.toString()
+        if (currText.equals("0")) {
+            currText = num.toString()
         } else {
-            currentNum += num.toString()
+            currText += num.toString()
         }
-        binding.editTextAnswer.setText(currentNum)
+        binding.editTextAnswer.setText(currText)
     }
 
     fun operator(op: String) {
-        currentNum += op
-        binding.editTextAnswer.setText(currentNum)
+        var currText = binding.editTextAnswer.text.toString()
+        currText += op
+        binding.editTextAnswer.setText(currText)
     }
 }
 fun evaluateExpression(expression: String): Double {
