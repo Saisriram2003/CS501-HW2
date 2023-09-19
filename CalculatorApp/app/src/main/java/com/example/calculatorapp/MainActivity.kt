@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.calculatorapp.databinding.ActivityMainBinding
+import kotlin.ArithmeticException
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -90,12 +91,17 @@ class MainActivity : AppCompatActivity() {
 
         binding.buttonEqual.setOnClickListener {
             var expr = binding.editTextAnswer.text.toString()
-            var ans = evaluateExpression(expr)
-            Log.d(TAG, expr)
-            Log.d(TAG, ans.toString())
-            binding.editTextAnswer.setText(ans.toString())
+            try{
+                var ans = evaluateExpression(expr)
+                Log.d(TAG, expr)
+                Log.d(TAG, ans.toString())
+                binding.editTextAnswer.setText(ans.toString())
+            } catch (e: IllegalArgumentException) {
+                binding.editTextAnswer.setText("Illegal Expression")
+            } catch (e: ArithmeticException) {
+                binding.editTextAnswer.setText("Div by zero err")
+            }
         }
-
     }
 
     fun inputNum(num: Int) {
@@ -161,10 +167,7 @@ class MainActivity : AppCompatActivity() {
                 token.matches(Regex("[0-9]+")) -> values.add(token.toDouble())
                 // If operator
                 token in setOf("+", "-", "*", "/", "s") -> {
-                    while (operators.isNotEmpty() && precedence(operators.last()) >= precedence(
-                            token
-                        )
-                    ) {
+                    while (operators.isNotEmpty() && precedence(operators.last()) >= precedence(token)) {
                         val operator = operators.removeAt(operators.size - 1)
                         if (operator == "s") {
                             val a = values.removeAt(values.size - 1)
@@ -223,7 +226,12 @@ class MainActivity : AppCompatActivity() {
             "+" -> a + b
             "-" -> a - b
             "*" -> a * b
-            "/" -> a / b
+            "/" -> {
+                if(b == 0.0){
+                    throw ArithmeticException("Div by zero : $operator")
+                }
+                a / b
+            }
             else -> throw IllegalArgumentException("Invalid operator: $operator")
         }
     }
