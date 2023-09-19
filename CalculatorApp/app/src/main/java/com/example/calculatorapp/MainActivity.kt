@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.calculatorapp.databinding.ActivityMainBinding
 import kotlin.ArithmeticException
 import kotlin.math.pow
-import kotlin.math.sqrt
 
 private const val TAG = "MainActivity"
 
