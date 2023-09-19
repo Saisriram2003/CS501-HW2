@@ -1,19 +1,19 @@
 package com.example.calculatorapp
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.calculatorapp.databinding.ActivityMainBinding
 import kotlin.math.pow
 import kotlin.math.sqrt
 
+private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
     private var currentNum: String = "0"
-
-    private var operator: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,40 +94,9 @@ class MainActivity : AppCompatActivity() {
         binding.buttonEqual.setOnClickListener {
             var expr = binding.editTextAnswer.text.toString()
             var ans = evaluateExpression(expr)
-            println(expr)
-            println(ans)
+            Log.d(TAG, expr)
+            Log.d(TAG, ans.toString())
             binding.editTextAnswer.setText(ans.toString())
-//            if (opClicked) {
-//                var result = 0.0
-//                var inputNumList = currentNum.split(operator)
-//                var firstNum = inputNumList[0].toDoubleOrNull()
-//                var secondNum = inputNumList[1].toDoubleOrNull()
-//
-//                if (firstNum == null || secondNum == null) {
-//                    binding.editTextAnswer.setText("Please enter valid inputs.")
-//                } else {
-//
-//                    when (operator) {
-//                        "+" -> result = firstNum + secondNum
-//                        "-" -> result = firstNum - secondNum
-//                        "*" -> result = firstNum * secondNum
-//                        "/" -> result = firstNum / secondNum
-//                    }
-//                    if(result > Double.MAX_VALUE || result < Double.MIN_VALUE){
-//                        binding.editTextAnswer.setText("The value is out of range.")
-//                    }
-//                    else{
-//                        binding.editTextAnswer.setText(result.toString())
-//                    }
-//
-//                    // reset firstNum and secondNsum for another round of operation
-//                    opClicked = false
-//                    currentNum = result.toString()
-//                }
-//            }
-//            else{
-//                binding.editTextAnswer.setText("Please enter a valid equation")
-//            }
         }
 
     }
@@ -182,17 +151,17 @@ fun tokenizeExpression(expression: String): List<String> {
 }
 
 fun evaluate(tokens: List<String>): Double {
-    println(tokens)
+    Log.d(TAG, tokens.toString())
     val values = mutableListOf<Double>()
     val operators = mutableListOf<String>()
 
     for (token in tokens) {
-        println(operators)
+        Log.d(TAG, operators.toString())
         when {
             // If number add it to values
             token.matches(Regex("[0-9]+")) -> values.add(token.toDouble())
             // If operator
-            token in setOf("+", "-", "*", "/","s") -> {
+            token in setOf("+", "-", "*", "/", "s") -> {
                 while (operators.isNotEmpty() && precedence(operators.last()) >= precedence(token)) {
                     val operator = operators.removeAt(operators.size - 1)
                     if (operator == "s"){
@@ -213,8 +182,8 @@ fun evaluate(tokens: List<String>): Double {
             else -> throw IllegalArgumentException("Invalid token: $token")
         }
     }
-    println(values)
-    println(operators)
+    Log.d(TAG, values.toString())
+    Log.d(TAG, operators.toString())
 
     while (operators.isNotEmpty()) {
         val operator = operators.removeAt(operators.size - 1)
@@ -243,7 +212,7 @@ fun precedence(operator: String): Int {
     return when (operator) {
         "+", "-" -> 1
         "*", "/" -> 2
-        "s"->3
+        "s" -> 3
         else -> 0
     }
 }
