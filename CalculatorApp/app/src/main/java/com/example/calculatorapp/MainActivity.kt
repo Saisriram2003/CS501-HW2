@@ -1,10 +1,11 @@
 package com.example.calculatorapp
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.graphics.Color
+import androidx.appcompat.app.AppCompatActivity
 import com.example.calculatorapp.databinding.ActivityMainBinding
-import java.lang.Math.sqrt
+import kotlin.math.pow
+import kotlin.math.sqrt
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -13,8 +14,6 @@ class MainActivity : AppCompatActivity() {
     private var currentNum: String = "0"
 
     private var operator: String = ""
-
-    private var opClicked: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,31 +70,19 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.buttonPlus.setOnClickListener {
-            if(!opClicked){
-                operator("+")
-                opClicked = true
-            }
+            operator("+")
         }
 
         binding.buttonSub.setOnClickListener {
-            if(!opClicked){
-                operator("-")
-                opClicked = true
-            }
+            operator("-")
         }
 
         binding.buttonMult.setOnClickListener{
-            if(!opClicked){
-                operator("*")
-                opClicked = true
-            }
+            operator("*")
         }
 
         binding.buttonDiv.setOnClickListener {
-            if(!opClicked){
-                operator("/")
-                opClicked = true
-            }
+            operator("/")
         }
 
         binding.buttonSqrt.setOnClickListener {
@@ -105,39 +92,42 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.buttonEqual.setOnClickListener {
-            if (opClicked) {
-                var result = 0.0
-                var inputNumList = currentNum.split(operator)
-                var firstNum = inputNumList[0].toDoubleOrNull()
-                var secondNum = inputNumList[1].toDoubleOrNull()
-
-                if (firstNum == null || secondNum == null) {
-                    binding.editTextAnswer.setText("Please enter valid inputs.")
-                } else {
-
-                    when (operator) {
-                        "+" -> result = firstNum + secondNum
-                        "-" -> result = firstNum - secondNum
-                        "*" -> result = firstNum * secondNum
-                        "/" -> result = firstNum / secondNum
-                    }
-                    if(result > Double.MAX_VALUE || result < Double.MIN_VALUE){
-                        binding.editTextAnswer.setText("The value is out of range.")
-                    }
-                    else{
-                        binding.editTextAnswer.setText(result.toString())
-                    }
-
-                    // reset firstNum and secondNsum for another round of operation
-                    opClicked = false
-                    firstNum = 0.0
-                    secondNum = 0.0
-                    currentNum = "0"
-                }
-            }
-            else{
-                binding.editTextAnswer.setText("Please enter a valid equation")
-            }
+            var expr = binding.editTextAnswer.text.toString()
+            var ans = evaluateExpression(expr)
+            println(expr)
+            println(ans)
+            binding.editTextAnswer.setText(ans.toString())
+//            if (opClicked) {
+//                var result = 0.0
+//                var inputNumList = currentNum.split(operator)
+//                var firstNum = inputNumList[0].toDoubleOrNull()
+//                var secondNum = inputNumList[1].toDoubleOrNull()
+//
+//                if (firstNum == null || secondNum == null) {
+//                    binding.editTextAnswer.setText("Please enter valid inputs.")
+//                } else {
+//
+//                    when (operator) {
+//                        "+" -> result = firstNum + secondNum
+//                        "-" -> result = firstNum - secondNum
+//                        "*" -> result = firstNum * secondNum
+//                        "/" -> result = firstNum / secondNum
+//                    }
+//                    if(result > Double.MAX_VALUE || result < Double.MIN_VALUE){
+//                        binding.editTextAnswer.setText("The value is out of range.")
+//                    }
+//                    else{
+//                        binding.editTextAnswer.setText(result.toString())
+//                    }
+//
+//                    // reset firstNum and secondNsum for another round of operation
+//                    opClicked = false
+//                    currentNum = result.toString()
+//                }
+//            }
+//            else{
+//                binding.editTextAnswer.setText("Please enter a valid equation")
+//            }
         }
 
     }
@@ -152,18 +142,118 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun operator(op: String) {
-            // No operator has been clicked before:
-            // set the operator
-            // store the firstNum (by converting it)
-            // clear the currentNum
-        operator = op
-
         currentNum += op
         binding.editTextAnswer.setText(currentNum)
-//        else {
-            // operator has been pressed before:
-            // replace the operator
-//            operator = op
-//        }
+    }
+}
+fun evaluateExpression(expression: String): Double {
+    val sanitizedExpression = expression.replace(" ", "") // Remove spaces for simplicity
+    val tokens = tokenizeExpression(sanitizedExpression)
+    return evaluate(tokens)
+}
+
+fun tokenizeExpression(expression: String): List<String> {
+    val operators = setOf("+", "-", "*", "/","s")
+    val tokens = mutableListOf<String>()
+    var currentToken = ""
+    var i = 0
+    while (i < expression.length) {
+        var char = expression[i]
+        if (char.toString() in operators) {
+            if (currentToken.isNotEmpty()) {
+                tokens.add(currentToken)
+                currentToken = ""
+            }
+            if(char.toString() == "s"){
+                i += 3
+            }
+            tokens.add(char.toString())
+        } else {
+            currentToken += char
+        }
+        i += 1
+    }
+
+    if (currentToken.isNotEmpty()) {
+        tokens.add(currentToken)
+    }
+
+    return tokens
+}
+
+fun evaluate(tokens: List<String>): Double {
+    println(tokens)
+    val values = mutableListOf<Double>()
+    val operators = mutableListOf<String>()
+
+    for (token in tokens) {
+        println(operators)
+        when {
+            // If number add it to values
+            token.matches(Regex("[0-9]+")) -> values.add(token.toDouble())
+            // If operator
+            token in setOf("+", "-", "*", "/","s") -> {
+                while (operators.isNotEmpty() && precedence(operators.last()) >= precedence(token)) {
+                    val operator = operators.removeAt(operators.size - 1)
+                    if (operator == "s"){
+                        val a = values.removeAt(values.size - 1)
+                        val result = a.pow(0.5)
+                        values.add(result)
+                    }
+                    else{
+                        val b = values.removeAt(values.size - 1)
+                        val a = values.removeAt(values.size - 1)
+                        val result = applyOperator(a, b, operator)
+                        values.add(result)
+                    }
+
+                }
+                operators.add(token)
+            }
+            else -> throw IllegalArgumentException("Invalid token: $token")
+        }
+    }
+    println(values)
+    println(operators)
+
+    while (operators.isNotEmpty()) {
+        val operator = operators.removeAt(operators.size - 1)
+        if (operator == "s"){
+            val a = values.removeAt(values.size - 1)
+            val result = a.pow(0.5)
+            values.add(result)
+        }
+        else{
+            val b = values.removeAt(values.size - 1)
+            val a = values.removeAt(values.size - 1)
+            val result = applyOperator(a, b, operator)
+            values.add(result)
+        }
+
+    }
+
+    if (values.size != 1) {
+        throw IllegalArgumentException("Invalid expression")
+    }
+
+    return values[0]
+}
+
+fun precedence(operator: String): Int {
+    return when (operator) {
+        "+", "-" -> 1
+        "*", "/" -> 2
+        "s"->3
+        else -> 0
+    }
+}
+
+fun applyOperator(a: Double, b: Double, operator: String): Double {
+    return when (operator) {
+        "+" -> a + b
+        "-" -> a - b
+        "*" -> a * b
+        "/" -> a / b
+        else -> throw IllegalArgumentException("Invalid operator: $operator")
     }
 }
