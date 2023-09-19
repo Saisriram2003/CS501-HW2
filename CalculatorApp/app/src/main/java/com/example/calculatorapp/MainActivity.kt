@@ -6,6 +6,7 @@ import android.graphics.Color
 import com.example.calculatorapp.databinding.ActivityMainBinding
 import java.lang.Math.sqrt
 
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -124,6 +125,7 @@ class MainActivity : AppCompatActivity() {
                         }else{
                             result = firstNum / secondNum
                         }
+                        "sqrt" -> result = sqrt(firstNum)
                     }
                     if(result > Double.MAX_VALUE || result < Double.MIN_VALUE){
                         binding.editTextAnswer.setText("The value is out of range.")
